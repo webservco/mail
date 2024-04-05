@@ -65,8 +65,8 @@ final class MailItemEntityStorage implements MailItemEntityStorageInterface
             new MailItem(
                 $this->dataExtractionContainer->getLooseArrayNonEmptyDataExtractionService()
                     ->getNonEmptyString($data, 'mail_subject'),
-                $this->dataExtractionContainer->getLooseArrayNonEmptyDataExtractionService()
-                    ->getNonEmptyString($data, 'mail_message'),
+                $this->dataExtractionContainer->getLooseArrayDataExtractionService()
+                    ->getString($data, 'mail_message'),
                 $this->dataExtractionContainer->getLooseArrayNonEmptyDataExtractionService()
                     ->getNonEmptyString($data, 'mail_to'),
                 $this->dataExtractionContainer->getLooseArrayNonEmptyDataExtractionService()
