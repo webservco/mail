@@ -8,9 +8,11 @@ use WebServCo\Database\Contract\PDOContainerInterface;
 use WebServCo\Mail\Contract\Service\Storage\MailItemStorageInterface;
 use WebServCo\Mail\DataTransfer\MailItem;
 
+use function sprintf;
+
 final class MailItemStorage implements MailItemStorageInterface
 {
-    public function __construct(private PDOContainerInterface $pdoContainer)
+    public function __construct(private PDOContainerInterface $pdoContainer, private string $tableName)
     {
     }
 
@@ -18,7 +20,10 @@ final class MailItemStorage implements MailItemStorageInterface
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
             $this->pdoContainer->getPDO(),
-            "UPDATE mailing SET error_message = NULL, when_error = NULL WHERE id = ? LIMIT 1",
+            sprintf(
+                'UPDATE %s SET error_message = NULL, when_error = NULL WHERE id = ? LIMIT 1',
+                $this->tableName,
+            ),
         );
 
         return $stmt->execute([$id]);
@@ -28,7 +33,10 @@ final class MailItemStorage implements MailItemStorageInterface
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
             $this->pdoContainer->getPDO(),
-            "UPDATE mailing SET error_message = ?, when_error = NOW() WHERE id = ? LIMIT 1",
+            sprintf(
+                'UPDATE %s SET error_message = ?, when_error = NOW() WHERE id = ? LIMIT 1',
+                $this->tableName,
+            ),
         );
 
         return $stmt->execute([$errorMessage, $id]);
@@ -38,7 +46,10 @@ final class MailItemStorage implements MailItemStorageInterface
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
             $this->pdoContainer->getPDO(),
-            "UPDATE mailing SET when_sent = NOW() WHERE id = ? LIMIT 1",
+            sprintf(
+                'UPDATE %s SET when_sent = NOW() WHERE id = ? LIMIT 1',
+                $this->tableName,
+            ),
         );
 
         return $stmt->execute([$id]);
@@ -48,9 +59,12 @@ final class MailItemStorage implements MailItemStorageInterface
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
             $this->pdoContainer->getPDO(),
-            "INSERT INTO mailing 
-            (mail_subject, mail_message, mail_to, mail_cc, mail_bcc) 
-            VALUES (?, ?, ?, ?, ?)",
+            sprintf(
+                'INSERT INTO %s 
+                (mail_subject, mail_message, mail_to, mail_cc, mail_bcc) 
+                VALUES (?, ?, ?, ?, ?)',
+                $this->tableName,
+            ),
         );
         $stmt->execute(
             [

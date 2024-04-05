@@ -13,11 +13,14 @@ use WebServCo\Mail\Contract\Service\Storage\MailItemEntityStorageInterface;
 use WebServCo\Mail\DataTransfer\MailItem;
 use WebServCo\Mail\Entity\MailItemEntity;
 
+use function sprintf;
+
 final class MailItemEntityStorage implements MailItemEntityStorageInterface
 {
     public function __construct(
         private DataExtractionContainerInterface $dataExtractionContainer,
         private PDOContainerInterface $pdoContainer,
+        private string $tableName,
     ) {
     }
 
@@ -39,8 +42,11 @@ final class MailItemEntityStorage implements MailItemEntityStorageInterface
     {
         return $this->pdoContainer->getPDOService()->prepareStatement(
             $this->pdoContainer->getPDO(),
-            'SELECT id, mail_to, mail_cc, mail_bcc, mail_subject, mail_message
-            FROM mailing WHERE when_sent IS NULL',
+            sprintf(
+                'SELECT id, mail_to, mail_cc, mail_bcc, mail_subject, mail_message
+                FROM %s WHERE when_sent IS NULL',
+                $this->tableName,
+            ),
         );
     }
 
