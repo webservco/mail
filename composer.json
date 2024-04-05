@@ -25,7 +25,12 @@
     "license" : "MIT",
     "name" : "webservco/mail",
     "require": {
-        "php" : "^8.2"
+        "php" : "^8.2",
+        "phpmailer/phpmailer": "^6",
+        "psr/log": "^3",
+        "webservco/command": "^0",
+        "webservco/data": "^0",
+        "webservco/database": "^0"
     },
     "require-dev": {
         "pds/skeleton": "^1",
