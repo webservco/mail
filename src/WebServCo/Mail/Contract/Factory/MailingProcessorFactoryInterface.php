@@ -8,5 +8,5 @@ use WebServCo\Mail\Contract\Processor\MailingProcessorInterface;
 
 interface MailingProcessorFactoryInterface
 {
-    public function creatMailingProcessor(): MailingProcessorInterface;
+    public function createMailingProcessor(): MailingProcessorInterface;
 }
