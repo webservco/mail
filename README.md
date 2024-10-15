@@ -27,4 +27,5 @@ A PHP component/library for async email sending.
 
 ## TODO
 
-- [ ] Add support for attachments
+- [ ] Add support for attachments;
+- [ ] Solve Phan "PhanUndeclaredType*";
