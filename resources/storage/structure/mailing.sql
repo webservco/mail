@@ -6,8 +6,8 @@ CREATE TABLE mailing (
     mail_message TEXT NOT NULL,
 
     mail_to VARCHAR(50) NOT NULL,
-    mail_cc VARCHAR(50) DEFAULT NULL,
-    mail_bcc VARCHAR(50) DEFAULT NULL,
+    mail_cc VARCHAR(255) DEFAULT NULL,
+    mail_bcc VARCHAR(255) DEFAULT NULL,
 
     when_added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     when_error DATETIME DEFAULT NULL,

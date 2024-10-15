@@ -16,11 +16,17 @@ use WebServCo\Mail\Contract\Service\Storage\MailItemStorageInterface;
 use WebServCo\Mail\DataTransfer\MailItem;
 use WebServCo\Mail\Entity\MailItemEntity;
 
+use function preg_split;
 use function sleep;
 use function sprintf;
+use function trim;
+
+use const PREG_SPLIT_NO_EMPTY;
 
 final class MailingProcessor extends AbstractItemsProcessingReportConsumer implements MailingProcessorInterface
 {
+    private const string ADDRESS_SPLIT_PATTERN = '/(\s*,*\s*)*,+(\s*,*\s*)*/';
+
     public function __construct(
         ItemsProcessingReportInterface $itemsProcessingReportInterface,
         private LoggerInterface $logger,
@@ -60,6 +66,60 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
         return true;
     }
 
+    private function handleMailBcc(MailItem $mailItem): bool
+    {
+        if ($mailItem->bcc === null) {
+            return false;
+        }
+
+        $bccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItem->bcc, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($bccItems === false) {
+            throw new UnexpectedValueException('Invalid cc');
+        }
+
+        foreach ($bccItems as $bccItem) {
+            $this->phpMailer->addBCC(trim($bccItem));
+        }
+
+        return true;
+    }
+
+    private function handleMailCc(MailItem $mailItem): bool
+    {
+        if ($mailItem->cc === null) {
+            return false;
+        }
+
+        $ccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItem->cc, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($ccItems === false) {
+            throw new UnexpectedValueException('Invalid cc');
+        }
+
+        foreach ($ccItems as $ccItem) {
+            $this->phpMailer->addCC(trim($ccItem));
+        }
+
+        return true;
+    }
+
+    private function handleMailSending(MailItem $mailItem): bool
+    {
+        // No multi support (bad practice, recipients should not see each other's addresses).
+        $this->phpMailer->addAddress($mailItem->to);
+
+        $this->handleMailCc($mailItem);
+
+        $this->handleMailBcc($mailItem);
+
+        $this->phpMailer->Subject = $mailItem->subject;
+        $this->phpMailer->isHTML();
+        $this->phpMailer->msgHTML($mailItem->message);
+
+        return $this->phpMailer->send();
+    }
+
     private function processItem(MailItemEntity $mailItemEntity): bool
     {
         $this->logger->debug(sprintf('Process item id "%d".', $mailItemEntity->id));
@@ -67,7 +127,7 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
         try {
             $this->mailItemStorage->clearError($mailItemEntity->id);
 
-            $this->sendMail($mailItemEntity->mailItem);
+            $this->handleMailSending($mailItemEntity->mailItem);
 
             $this->mailItemStorage->setSent($mailItemEntity->id);
 
@@ -92,21 +152,5 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
         $this->phpMailer->clearAllRecipients();
 
         return true;
-    }
-
-    private function sendMail(MailItem $mailItem): bool
-    {
-        $this->phpMailer->addAddress($mailItem->to);
-        if ($mailItem->cc !== null) {
-            $this->phpMailer->addCC($mailItem->cc);
-        }
-        if ($mailItem->bcc !== null) {
-            $this->phpMailer->addBCC($mailItem->bcc);
-        }
-        $this->phpMailer->Subject = $mailItem->subject;
-        $this->phpMailer->isHTML();
-        $this->phpMailer->msgHTML($mailItem->message);
-
-        return $this->phpMailer->send();
     }
 }
