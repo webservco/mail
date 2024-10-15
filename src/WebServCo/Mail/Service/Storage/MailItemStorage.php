@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WebServCo\Mail\Service\Storage;
 
 use WebServCo\Database\Contract\PDOContainerInterface;
+use WebServCo\Mail\Contract\Service\MailingTableNameServiceInterface;
 use WebServCo\Mail\Contract\Service\Storage\MailItemStorageInterface;
 use WebServCo\Mail\DataTransfer\MailItem;
 
@@ -12,8 +13,10 @@ use function sprintf;
 
 final class MailItemStorage implements MailItemStorageInterface
 {
-    public function __construct(private PDOContainerInterface $pdoContainer, private string $tableName)
-    {
+    public function __construct(
+        private MailingTableNameServiceInterface $tableNameService,
+        private PDOContainerInterface $pdoContainer,
+    ) {
     }
 
     public function clearError(int $id): bool
@@ -22,7 +25,7 @@ final class MailItemStorage implements MailItemStorageInterface
             $this->pdoContainer->getPDO(),
             sprintf(
                 'UPDATE %s SET error_message = NULL, when_error = NULL WHERE id = ? LIMIT 1',
-                $this->tableName,
+                $this->tableNameService->getTableName(),
             ),
         );
 
@@ -35,7 +38,7 @@ final class MailItemStorage implements MailItemStorageInterface
             $this->pdoContainer->getPDO(),
             sprintf(
                 'UPDATE %s SET error_message = ?, when_error = NOW() WHERE id = ? LIMIT 1',
-                $this->tableName,
+                $this->tableNameService->getTableName(),
             ),
         );
 
@@ -48,7 +51,7 @@ final class MailItemStorage implements MailItemStorageInterface
             $this->pdoContainer->getPDO(),
             sprintf(
                 'UPDATE %s SET when_sent = NOW() WHERE id = ? LIMIT 1',
-                $this->tableName,
+                $this->tableNameService->getTableName(),
             ),
         );
 
@@ -63,7 +66,7 @@ final class MailItemStorage implements MailItemStorageInterface
                 'INSERT INTO %s 
                 (mail_subject, mail_message, mail_to, mail_cc, mail_bcc) 
                 VALUES (?, ?, ?, ?, ?)',
-                $this->tableName,
+                $this->tableNameService->getTableName(),
             ),
         );
         $stmt->execute(

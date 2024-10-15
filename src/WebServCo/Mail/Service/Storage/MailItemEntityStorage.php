@@ -9,6 +9,7 @@ use OutOfRangeException;
 use PDOStatement;
 use WebServCo\Data\Contract\Extraction\DataExtractionContainerInterface;
 use WebServCo\Database\Contract\PDOContainerInterface;
+use WebServCo\Mail\Contract\Service\MailingTableNameServiceInterface;
 use WebServCo\Mail\Contract\Service\Storage\MailItemEntityStorageInterface;
 use WebServCo\Mail\DataTransfer\MailItem;
 use WebServCo\Mail\Entity\MailItemEntity;
@@ -19,8 +20,8 @@ final class MailItemEntityStorage implements MailItemEntityStorageInterface
 {
     public function __construct(
         private DataExtractionContainerInterface $dataExtractionContainer,
+        private MailingTableNameServiceInterface $tableNameService,
         private PDOContainerInterface $pdoContainer,
-        private string $tableName,
     ) {
     }
 
@@ -45,7 +46,7 @@ final class MailItemEntityStorage implements MailItemEntityStorageInterface
             sprintf(
                 'SELECT id, mail_to, mail_cc, mail_bcc, mail_subject, mail_message
                 FROM %s WHERE when_sent IS NULL',
-                $this->tableName,
+                $this->tableNameService->getTableName(),
             ),
         );
     }
