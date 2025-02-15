@@ -68,11 +68,12 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
 
     private function handleMailBcc(MailItem $mailItem): bool
     {
-        if ($mailItem->bcc === null) {
+        $mailItemBcc = $mailItem->bcc;
+        if ($mailItemBcc === null) {
             return false;
         }
 
-        $bccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItem->bcc, -1, PREG_SPLIT_NO_EMPTY);
+        $bccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItemBcc, -1, PREG_SPLIT_NO_EMPTY);
 
         if ($bccItems === false) {
             throw new UnexpectedValueException('Invalid cc');
@@ -87,11 +88,12 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
 
     private function handleMailCc(MailItem $mailItem): bool
     {
-        if ($mailItem->cc === null) {
+        $mailItemCc = $mailItem->cc;
+        if ($mailItemCc === null) {
             return false;
         }
 
-        $ccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItem->cc, -1, PREG_SPLIT_NO_EMPTY);
+        $ccItems = preg_split(self::ADDRESS_SPLIT_PATTERN, $mailItemCc, -1, PREG_SPLIT_NO_EMPTY);
 
         if ($ccItems === false) {
             throw new UnexpectedValueException('Invalid cc');
