@@ -28,6 +28,7 @@
         "php" : "^8.4",
         "phpmailer/phpmailer": "^6",
         "psr/log": "^3",
+        "webservco/configuration": "^1",
         "webservco/command": "^1",
         "webservco/data": "^1",
         "webservco/database": "^1"
