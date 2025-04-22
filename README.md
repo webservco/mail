@@ -23,9 +23,13 @@ A PHP component/library for async email sending.
 - Process: `MailingProcessorInterface`.`process()`;
 - Get report: `MailingProcessorInterface`.`getItemsProcessingReport()`;
 
+## See also
+
+`MailingTableNameServiceFromConfig` - a default `MailingTableNameServiceInterface` implementation.
+
 ---
 
 ## TODO
 
 - [ ] Add support for attachments;
-- [ ] Solve Phan "PhanUndeclaredType*";
+
