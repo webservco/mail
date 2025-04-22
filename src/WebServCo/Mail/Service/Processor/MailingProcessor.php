@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebServCo\Mail\Service\Processor;
 
+use Override;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -38,6 +39,7 @@ final class MailingProcessor extends AbstractItemsProcessingReportConsumer imple
         parent::__construct($itemsProcessingReportInterface);
     }
 
+    #[Override]
     public function process(): bool
     {
         $this->logger->info(__METHOD__);

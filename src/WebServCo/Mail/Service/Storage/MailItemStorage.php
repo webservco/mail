@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebServCo\Mail\Service\Storage;
 
+use Override;
 use WebServCo\Database\Contract\PDOContainerInterface;
 use WebServCo\Mail\Contract\Service\MailingTableNameServiceInterface;
 use WebServCo\Mail\Contract\Service\Storage\MailItemStorageInterface;
@@ -19,6 +20,7 @@ final class MailItemStorage implements MailItemStorageInterface
     ) {
     }
 
+    #[Override]
     public function clearError(int $id): bool
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
@@ -32,6 +34,7 @@ final class MailItemStorage implements MailItemStorageInterface
         return $stmt->execute([$id]);
     }
 
+    #[Override]
     public function setError(int $id, string $errorMessage): bool
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
@@ -45,6 +48,7 @@ final class MailItemStorage implements MailItemStorageInterface
         return $stmt->execute([$errorMessage, $id]);
     }
 
+    #[Override]
     public function setSent(int $id): bool
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(
@@ -58,6 +62,7 @@ final class MailItemStorage implements MailItemStorageInterface
         return $stmt->execute([$id]);
     }
 
+    #[Override]
     public function storeMailItem(MailItem $mailItem): int
     {
         $stmt = $this->pdoContainer->getPDOService()->prepareStatement(

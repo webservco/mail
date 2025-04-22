@@ -6,6 +6,7 @@ namespace WebServCo\Mail\Service\Storage;
 
 use Generator;
 use OutOfRangeException;
+use Override;
 use PDOStatement;
 use WebServCo\Data\Contract\Extraction\DataExtractionContainerInterface;
 use WebServCo\Database\Contract\PDOContainerInterface;
@@ -28,6 +29,7 @@ final class MailItemEntityStorage implements MailItemEntityStorageInterface
     /**
      * @return \Generator<\WebServCo\Mail\Entity\MailItemEntity>
      */
+    #[Override]
     public function iterateUnsentMailItemEntity(): Generator
     {
         $stmt = $this->getUnsentMailItemEntityStatement();
