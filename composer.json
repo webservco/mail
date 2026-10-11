@@ -20,7 +20,7 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "description" : "A PHP component/library.",
+    "description" : "A PHP component/library. Saves outgoing emails in a database table and sends them later from a scheduled job using PHPMailer.",
     "homepage" : "https://webserv.co",
     "keywords" : [
         "component",
